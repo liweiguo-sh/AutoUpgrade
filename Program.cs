@@ -134,7 +134,7 @@ namespace AutoUpgrade {
                     urlFilterDo = iniFileClient.getValue("url_login");
                 }
                 if (urlFilterDo.Equals("")) {
-                    GS.ShowError("参数 filter.do 不存在，请检查。");
+                    GS.ShowWarning("未配置自动升级服务端资源，不执行自升级。");
                     return false;
                 }
                 ParseDomainIp();
