@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DoYs自动化升级工具")]
 [assembly: AssemblyDescription("说明AAA")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("公司BBB")]
+[assembly: AssemblyCompany("doys-next.com")]
 [assembly: AssemblyProduct("DoYs AutoUpgrade Tools")]
 [assembly: AssemblyCopyright("volant@163.com")]
 [assembly: AssemblyTrademark("doys-next.com")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 //通过使用 "*"，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
+[assembly: AssemblyFileVersion("2021.04.13.2")]

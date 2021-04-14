@@ -33,7 +33,6 @@ namespace AutoUpgrade {
         private static string iniClient = "";           // -- 客户端version.ini文件 --
         private static string iniServer = "";           // -- 客户端version_server.ini文件 --
 
-        private static string urlFilterDo = "";         // -- url：filter.do --
         private static string urlServerPath = "";       // -- 服务端client_download目录 --
         private static string urlServerIni = "";        // -- 服务端version_server.ini --
 
@@ -110,10 +109,10 @@ namespace AutoUpgrade {
         #region -- 读取配置文件、下载升级文件 --
         private static bool UpgradeResources() {
             #region -- 过程变量定义 --
-            string versionClient = "";
-            string fileName = "", fileSave = "";
+            string versionClient;
+            string fileName, fileSave = "";
 
-            IniFile.IniResItem iriServer = null;
+            IniFile.IniResItem iriServer;
             #endregion
             try {
                 #region -- 1、读取本地local.ini，获取服务端资源路径 --
@@ -125,27 +124,10 @@ namespace AutoUpgrade {
                 }
                 iniFileClient = new IniFile(iniLocal, 1);
 
-                urlFilterDo = iniFileClient.getValue("filter.do");
-                if (urlFilterDo.Equals("")) {
-                    urlFilterDo = iniFileClient.getValue("url_server_path");
-                }
-                if (urlFilterDo.Equals("")) {
-                    // -- 兼容旧版本 --
-                    urlFilterDo = iniFileClient.getValue("url_login");
-                }
-                if (urlFilterDo.Equals("")) {
-                    GS.ShowWarning("未配置自动升级服务端资源，不执行自升级。");
-                    return false;
-                }
-                ParseDomainIp();
-
                 urlServerPath = iniFileClient.getValue("url_server_path");
                 if (urlServerPath.Equals("")) {
-                    // -- 兼容旧版本 --
-                    parseServerPath();
-                }
-                if (urlServerPath.Equals("")) {
-                    GS.ShowError("参数 url_server_path 不存在，请检查。");
+                    // -- 不执行自动升级 --
+                    // -- GS.ShowError("参数 url_server_path 不存在，请检查。"); 
                     return false;
                 }
                 if (!urlServerPath.EndsWith("/")) {
@@ -257,68 +239,6 @@ namespace AutoUpgrade {
                 GS.ShowError(e.Message);
                 return false;
             }
-            return true;
-        }
-
-        private static bool ParseDomainIp() {
-            #region -- 过程变量定义 --
-            bool blReturn = false;
-
-            int nIdx = 0;
-
-            string strDomainIp = "";
-            #endregion
-            #region -- 解析IP地址或域名部分 --
-            try {
-                if (urlFilterDo.StartsWith("http://", StringComparison.CurrentCultureIgnoreCase)) {
-                    strDomainIp = urlFilterDo.Substring(7);
-                }
-                else if (urlFilterDo.StartsWith("https://", StringComparison.CurrentCultureIgnoreCase)) {
-                    strDomainIp = urlFilterDo.Substring(8);
-                }
-                else {
-                    GS.ShowError("客户端配置文件 local.ini 中的 url_login 项格式不正确，请检查。\n" + urlFilterDo + "\n参数 filter.do 必需以 http:// 或 https:// 开头。");
-                    return false;
-                }
-
-                nIdx = strDomainIp.IndexOf("/");
-                if (nIdx <= 0) {
-                    GS.ShowError("客户端配置文件 local.ini 中的 filter.do 项格式不正确，请检查。\n" + urlFilterDo);
-                    return false;
-                }
-                strDomainIp = strDomainIp.Substring(0, nIdx);
-
-                nIdx = strDomainIp.IndexOf(":");
-                if (nIdx > 0) {
-                    strDomainIp = strDomainIp.Substring(0, nIdx);
-                }
-
-                // -- 将IP或域名加入信任站点 --
-                System.Net.IPAddress ipAddress;
-                if (System.Net.IPAddress.TryParse(strDomainIp, out ipAddress)) {
-                    blReturn = AddTrustSite_IP(strDomainIp);
-                }
-                else {
-                    blReturn = AddTrustSite_Domain(strDomainIp);
-                }
-                if (!blReturn) {
-                    return false;
-                }
-            } catch (Exception e) {
-                GS.ShowError(e);
-                return false;
-            }
-            #endregion
-            return true;
-        }
-        private static bool parseServerPath() {
-            int nIdx = 0;
-
-            string urlLogin = iniFileClient.getValue("url_login");
-            // --------------------------------------------
-            nIdx = urlLogin.IndexOf("/html/");
-            urlServerPath = urlLogin.Substring(0, nIdx) + "/client_download/";
-            // --------------------------------------------
             return true;
         }
         #endregion
