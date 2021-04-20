@@ -53,7 +53,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(198, 21);
             this.label1.TabIndex = 1;
-            this.label1.Text = "系统努力加载中，请稍等...";
+            this.label1.Text = "系统发现新版本，正在执行升级任务，请稍等...";
             // 
             // FormWaitting
             // 
